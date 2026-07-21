@@ -1,117 +1,57 @@
-import org.w3c.dom.Text;
+// Abstract Products
+interface Button { void render(); }
+interface Checkbox { void render(); }
 
-class apk{
-    Theme thm;
-    Button button;
-    TextField textField;
-    DialogBox dialogBox;
-    apk(Theme th) {
-        thm = th;
-        button = thm.createButton();
-        textField = thm.createTextField();
-        dialogBox = thm.createDialogBox();
-    }
-    void buttonPress() {
-        button.render();
-    }
-    void GiveTextField() {
-        textField.render();
-    }
-    void ShowDialogBox() {
-        dialogBox.render();
-    }
-}
+// Concrete Products Family A (e.g., Mac Style)
+class MacButton implements Button { public void render() { System.out.println("Mac Button"); } }
+class MacCheckbox implements Checkbox { public void render() { System.out.println("Mac Checkbox"); } }
 
-interface Button {
-    void render();
-}
+// Concrete Products Family B (e.g., Windows Style)
+class WinButton implements Button { public void render() { System.out.println("Win Button"); } }
+class WinCheckbox implements Checkbox { public void render() { System.out.println("Win Checkbox"); } }
 
-interface TextField {
-    void render();
-}
-
-interface DialogBox {
-    void render();
-}
-
-class DarkButton implements Button {
-    public void render() {
-        System.out.println("Dark button");
-    }
-}
-
-class LightTextField implements TextField {
-    public void render() {
-        System.out.println("Ligth textfield");
-    }
-}
-
-class LightDialogBox implements DialogBox {
-    public void render() {
-        System.out.println("Light dialogbox");
-    }
-}
-
-class LightButton implements Button {
-    public void render() {
-        System.out.println("light button");
-    }
-}
-
-class DarkTextField implements TextField {
-    public void render() {
-        System.out.println("Dark textfield");
-    }
-}
-
-class DarkDialogBox implements DialogBox {
-    public void render() {
-        System.out.println("Dark dialogbox");
-    }
-}
-
-interface Theme {
+// Abstract Factory Interface
+interface GUIFactory {
     Button createButton();
-    TextField createTextField();
-    DialogBox createDialogBox();
+    Checkbox createCheckbox();
 }
 
-class Dark implements Theme{
-    public Button createButton() {
-        return new DarkButton();
+// Concrete Factories
+class MacFactory implements GUIFactory {
+    public Button createButton() { return new MacButton(); }
+    public Checkbox createCheckbox() { return new MacCheckbox(); }
+}
+
+class WinFactory implements GUIFactory {
+    public Button createButton() { return new WinButton(); }
+    public Checkbox createCheckbox() { return new WinCheckbox(); }
+}
+
+class apk {
+    GUIFactory gf;
+    Button bt;
+    Checkbox cb;
+    apk(GUIFactory g) {
+        gf = g;
+        bt = g.createButton();
+        cb = g.createCheckbox();
     }
-    public TextField createTextField() {
-        return new DarkTextField();
+    void renderButton() {
+        bt.render();
     }
-    public DialogBox createDialogBox() {
-        return new DarkDialogBox();
+    void renderCheckbox() {
+        cb.render();
     }
 }
 
-class Light implements Theme{
-    @Override
-    public Button createButton() {
-        return new LightButton();
-    }
-    public TextField createTextField() {
-        return new LightTextField();
-    }
-    public DialogBox createDialogBox() {
-        return new LightDialogBox();
-    }
-}
-
-
-
-public class a1_solve{
+public class template{
     public static void main(String[] args) {
-        apk a1 = new apk(new Dark());
-        a1.buttonPress();
-        a1.ShowDialogBox();
-        a1.GiveTextField();
-        apk a2 = new apk(new Light());
-        a2.buttonPress();
-        a2.ShowDialogBox();
-        a2.GiveTextField();
+        MacFactory mf = new MacFactory();
+        apk a1 = new apk(mf);
+        apk a2 = new apk(new WinFactory());
+        a1.renderButton();
+        a1.renderCheckbox();
+        a2.renderButton();
+        a2.renderCheckbox();
     }
 }
