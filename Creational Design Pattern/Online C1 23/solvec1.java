@@ -1,10 +1,16 @@
+
 class AuditLogger {
     static AuditLogger auditLogger = null;
     private AuditLogger() {
 
     }
     public static AuditLogger getInstance() {
-        if(auditLogger == null) auditLogger = new AuditLogger();
+        if(auditLogger == null) {
+            // this version is thread safe
+            synchronized(AuditLogger.class) {
+                if(auditLogger == null) auditLogger = new AuditLogger();
+            }
+        }
         return auditLogger;
     }
 }
